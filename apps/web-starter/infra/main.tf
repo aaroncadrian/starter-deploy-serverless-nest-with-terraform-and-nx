@@ -15,7 +15,7 @@ provider "aws" {
 
 locals {
   bucket_name    = "${var.app_name}.${var.environment_name}"
-  dist_directory = "${path.module}/../../dist/apps/${var.app_name}"
+  dist_directory = "${path.module}/../../../dist/apps/${var.app_name}"
 }
 
 #region S3 Bucket
