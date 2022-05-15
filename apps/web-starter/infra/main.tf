@@ -90,26 +90,16 @@ resource "aws_cloudfront_distribution" "site" {
   enabled = true
 
   default_root_object = "index.html"
-#  aliases             = [aws_s3_bucket.site.bucket]
+  #  aliases             = [aws_s3_bucket.site.bucket]
 
   default_cache_behavior {
-    allowed_methods        = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
+    allowed_methods        = ["GET", "HEAD"]
     cached_methods         = ["GET", "HEAD"]
     target_origin_id       = aws_s3_bucket.site.bucket
     viewer_protocol_policy = "redirect-to-https"
     compress               = true
 
-    min_ttl     = 0
-    default_ttl = 5 * 60
-    max_ttl     = 60 * 60
-
-    forwarded_values {
-      query_string = true
-
-      cookies {
-        forward = "none"
-      }
-    }
+    cache_policy_id = "658327ea-f89d-4fab-a63d-7e88639e58f6"
   }
 
   origin {
@@ -130,8 +120,8 @@ resource "aws_cloudfront_distribution" "site" {
 
   viewer_certificate {
     cloudfront_default_certificate = true
-#    ssl_support_method       = "sni-only"
-#    minimum_protocol_version = "TLSv1.2_2018"
+    #    ssl_support_method       = "sni-only"
+    #    minimum_protocol_version = "TLSv1.2_2018"
   }
 }
 
