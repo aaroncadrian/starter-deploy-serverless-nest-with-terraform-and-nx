@@ -80,7 +80,7 @@
       "options": {
         "cwd": "apps/svc-starter/infra",
         "commands": [
-          "terraform apply"
+          "terraform apply -auto-approve"
         ]
       }
     }
