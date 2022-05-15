@@ -8,7 +8,7 @@
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/apps/svc-starter",
-        "main": "apps/svc-starter/src/main.ts",
+        "main": "apps/svc-starter/src/local-entry-point.ts",
         "tsConfig": "apps/svc-starter/tsconfig.app.json",
         "assets": ["apps/svc-starter/src/assets"]
       },
@@ -17,6 +17,15 @@
           "optimization": true,
           "extractLicenses": true,
           "inspect": false,
+          "main": "apps/svc-starter/src/lambda-entry-point.ts",
+          "externalDependencies": [
+            "cache-manager",
+            "class-validator",
+            "class-transformer",
+            "@nestjs/websockets/socket-module",
+            "@nestjs/microservices/microservices-module",
+            "@nestjs/microservices"
+          ],
           "fileReplacements": [
             {
               "replace": "apps/svc-starter/src/environments/environment.ts",
