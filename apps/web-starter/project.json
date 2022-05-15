@@ -77,6 +77,33 @@
         "jestConfig": "apps/web-starter/jest.config.ts",
         "passWithNoTests": true
       }
+    },
+    "tf-init": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "apps/web-starter/infra",
+        "commands": [
+          "terraform init"
+        ]
+      }
+    },
+    "tf-apply": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "apps/web-starter/infra",
+        "commands": [
+          "terraform apply -auto-approve"
+        ]
+      }
+    },
+    "tf-destroy": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "apps/web-starter/infra",
+        "commands": [
+          "terraform destroy -auto-approve"
+        ]
+      }
     }
   },
   "tags": []
