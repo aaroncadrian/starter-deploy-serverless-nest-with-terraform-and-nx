@@ -5,12 +5,16 @@
   "targets": {
     "build": {
       "executor": "@nrwl/node:webpack",
-      "outputs": ["{options.outputPath}"],
+      "outputs": [
+        "{options.outputPath}"
+      ],
       "options": {
         "outputPath": "dist/apps/svc-starter",
         "main": "apps/svc-starter/src/local-entry-point.ts",
         "tsConfig": "apps/svc-starter/tsconfig.app.json",
-        "assets": ["apps/svc-starter/src/assets"]
+        "assets": [
+          "apps/svc-starter/src/assets"
+        ]
       },
       "configurations": {
         "production": {
@@ -43,17 +47,41 @@
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",
-      "outputs": ["{options.outputFile}"],
+      "outputs": [
+        "{options.outputFile}"
+      ],
       "options": {
-        "lintFilePatterns": ["apps/svc-starter/**/*.ts"]
+        "lintFilePatterns": [
+          "apps/svc-starter/**/*.ts"
+        ]
       }
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/apps/svc-starter"],
+      "outputs": [
+        "coverage/apps/svc-starter"
+      ],
       "options": {
         "jestConfig": "apps/svc-starter/jest.config.ts",
         "passWithNoTests": true
+      }
+    },
+    "tf-init": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "apps/svc-starter/infra",
+        "commands": [
+          "terraform init"
+        ]
+      }
+    },
+    "tf-apply": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "apps/svc-starter/infra",
+        "commands": [
+          "terraform apply"
+        ]
       }
     }
   },
