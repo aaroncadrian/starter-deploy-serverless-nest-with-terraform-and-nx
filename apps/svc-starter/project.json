@@ -83,6 +83,15 @@
           "terraform apply -auto-approve"
         ]
       }
+    },
+    "tf-destroy": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "apps/svc-starter/infra",
+        "commands": [
+          "terraform destroy -auto-approve"
+        ]
+      }
     }
   },
   "tags": []
