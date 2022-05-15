@@ -18,6 +18,19 @@ provider "aws" {
 locals {
   bucket_name    = "${var.app_name}-${var.environment_name}"
   dist_directory = "${path.module}/../../../dist/apps/${var.app_name}"
+
+  # Source: https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/using-managed-cache-policies.html
+  caching_optimized_cache_policy_id = "658327ea-f89d-4fab-a63d-7e88639e58f6"
+
+  # Source: https://engineering.statefarm.com/blog/terraform-s3-upload-with-mime/
+  # Source: https://dev.to/aws-builders/build-a-static-website-using-s3-route-53-with-terraform-1ele
+  mime_types = {
+    ".html" = "text/html"
+    ".js"   = "application/javascript"
+    ".css"  = "text/css"
+    ".txt"  = "text/plain"
+    ".ico"  = "image/x-icon"
+  }
 }
 
 #region S3 Bucket
@@ -44,11 +57,12 @@ resource "aws_s3_bucket_public_access_block" "site" {
 }
 
 resource "aws_s3_bucket_object" "dist" {
-  for_each = fileset(local.dist_directory, "*")
-  bucket   = aws_s3_bucket.site.id
-  key      = each.value
-  source   = "${local.dist_directory}/${each.value}"
-  etag     = filemd5("${local.dist_directory}/${each.value}")
+  for_each     = fileset(local.dist_directory, "*")
+  bucket       = aws_s3_bucket.site.id
+  key          = each.value
+  source       = "${local.dist_directory}/${each.value}"
+  etag         = filemd5("${local.dist_directory}/${each.value}")
+  content_type = lookup(local.mime_types, regex("\\.[^.]+$", "${local.dist_directory}/${each.value}"), null)
 }
 
 resource "aws_s3_bucket_policy" "read_site" {
