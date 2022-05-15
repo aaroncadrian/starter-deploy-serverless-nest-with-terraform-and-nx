@@ -35,3 +35,47 @@ resource "aws_dynamodb_table" "primary_table" {
 }
 
 #endregion
+
+#region IAM for Lambda
+
+resource "aws_iam_role_policy" "lambda_policy" {
+  name = "${var.app_name}.${var.environment_name}.lambda-policy"
+
+  role = aws_iam_role.lambda_role.id
+
+  policy = jsonencode({
+    Version   = "2012-10-17",
+    Statement = [
+      {
+        Sid    = "Stmt1652579297004"
+        Action = [
+          "dynamodb:Query",
+          "dynamodb:GetItem",
+        ],
+        Effect   = "Allow",
+        Resource = aws_dynamodb_table.primary_table.arn
+      }
+    ]
+  })
+}
+
+
+resource "aws_iam_role" "lambda_role" {
+  name = "${var.app_name}.${var.environment_name}.lambda-role"
+
+  assume_role_policy = jsonencode({
+    Version   = "2012-10-17",
+    Statement = [
+      {
+        Action    = "sts:AssumeRole"
+        Principal = {
+          Service = "lambda.amazonaws.com"
+        }
+        Effect = "Allow"
+        Sid    = ""
+      }
+    ]
+  })
+}
+
+#endregion
