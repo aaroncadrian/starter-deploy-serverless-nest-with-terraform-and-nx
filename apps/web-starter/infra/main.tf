@@ -1,3 +1,5 @@
+# Source: https://www.milanvit.net/post/terraform-recipes-cloudfront-distribution-from-s3-bucket/
+
 terraform {
   required_providers {
     aws = {
