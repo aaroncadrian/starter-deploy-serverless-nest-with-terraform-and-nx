@@ -61,23 +61,17 @@ resource "aws_s3_bucket_policy" "read_site" {
 #region CloudFront Distribution
 
 resource "aws_cloudfront_origin_access_identity" "site" {
-  comment = local.bucket_name
+  comment = "Allows CloudFront to reach ${aws_s3_bucket.site.id}"
 }
 
 data "aws_iam_policy_document" "read_site_bucket" {
+  version   = "2008-10-17"
+  policy_id = "PolicyForCloudFrontPrivateContent"
+
   statement {
+    sid       = "1"
     actions   = ["s3:GetObject"]
     resources = ["${aws_s3_bucket.site.arn}/*"]
-
-    principals {
-      type        = "AWS"
-      identifiers = [aws_cloudfront_origin_access_identity.site.iam_arn]
-    }
-  }
-
-  statement {
-    actions   = ["s3:ListBucket"]
-    resources = [aws_s3_bucket.site.arn]
 
     principals {
       type        = "AWS"
@@ -89,15 +83,12 @@ data "aws_iam_policy_document" "read_site_bucket" {
 resource "aws_cloudfront_distribution" "site" {
   enabled = true
 
-#  default_root_object = "index.html"
-  #  aliases             = [aws_s3_bucket.site.bucket]
-
   is_ipv6_enabled = true
 
   default_cache_behavior {
     allowed_methods        = ["GET", "HEAD"]
     cached_methods         = ["GET", "HEAD"]
-    target_origin_id       = aws_s3_bucket.site.bucket
+    target_origin_id       = aws_s3_bucket.site.bucket_regional_domain_name
     viewer_protocol_policy = "redirect-to-https"
     compress               = true
 
@@ -106,13 +97,12 @@ resource "aws_cloudfront_distribution" "site" {
 
   origin {
     domain_name = aws_s3_bucket.site.bucket_regional_domain_name
-    origin_id   = aws_s3_bucket.site.bucket
+    origin_id   = aws_s3_bucket.site.bucket_regional_domain_name
 
     s3_origin_config {
       origin_access_identity = aws_cloudfront_origin_access_identity.site.cloudfront_access_identity_path
     }
   }
-
 
   restrictions {
     geo_restriction {
@@ -122,20 +112,22 @@ resource "aws_cloudfront_distribution" "site" {
 
   viewer_certificate {
     cloudfront_default_certificate = true
-    #    ssl_support_method       = "sni-only"
-    #    minimum_protocol_version = "TLSv1.2_2018"
+    #    ssl_support_method             = "vip"
+    #    minimum_protocol_version       = "TLSv1"
   }
 
   custom_error_response {
-    error_code = 403
-    response_code = 200
-    response_page_path = "/index.html"
+    error_code            = 403
+    response_code         = 200
+    response_page_path    = "/index.html"
+    error_caching_min_ttl = 10
   }
 
   custom_error_response {
-    error_code = 404
-    response_code = 200
-    response_page_path = "/index.html"
+    error_code            = 404
+    response_code         = 200
+    response_page_path    = "/index.html"
+    error_caching_min_ttl = 10
   }
 }
 
