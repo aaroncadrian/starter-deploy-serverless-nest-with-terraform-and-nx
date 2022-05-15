@@ -79,11 +79,7 @@ resource "aws_cloudfront_origin_access_identity" "site" {
 }
 
 data "aws_iam_policy_document" "read_site_bucket" {
-  version   = "2008-10-17"
-  policy_id = "PolicyForCloudFrontPrivateContent"
-
   statement {
-    sid       = "1"
     actions   = ["s3:GetObject"]
     resources = ["${aws_s3_bucket.site.arn}/*"]
 
@@ -108,7 +104,7 @@ resource "aws_cloudfront_distribution" "site" {
     viewer_protocol_policy = "redirect-to-https"
     compress               = true
 
-    cache_policy_id = "658327ea-f89d-4fab-a63d-7e88639e58f6"
+    cache_policy_id = local.caching_optimized_cache_policy_id
   }
 
   origin {
@@ -128,8 +124,6 @@ resource "aws_cloudfront_distribution" "site" {
 
   viewer_certificate {
     cloudfront_default_certificate = true
-    #    ssl_support_method             = "vip"
-    #    minimum_protocol_version       = "TLSv1"
   }
 
   custom_error_response {
