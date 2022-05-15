@@ -22,6 +22,14 @@ locals {
 
 resource "aws_s3_bucket" "site" {
   bucket = local.bucket_name
+
+  force_destroy = true
+}
+
+resource "aws_s3_bucket_acl" "site" {
+  bucket = aws_s3_bucket.site.id
+
+  acl = "private"
 }
 
 resource "aws_s3_bucket_object" "dist" {
