@@ -85,6 +85,8 @@ resource "aws_cloudfront_distribution" "site" {
 
   is_ipv6_enabled = true
 
+  comment = "Terraform distribution for ${local.bucket_name}"
+
   default_cache_behavior {
     allowed_methods        = ["GET", "HEAD"]
     cached_methods         = ["GET", "HEAD"]
