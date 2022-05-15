@@ -38,5 +38,12 @@ testem.log
 .DS_Store
 Thumbs.db
 
-# Terraform
-.terraform/
+# Local .terraform directories
+**/.terraform/*
+
+# .tfstate files
+*.tfstate
+*.tfstate.*
+
+# Archives from Terraform
+*.zip
