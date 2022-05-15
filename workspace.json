@@ -2,6 +2,8 @@
   "$schema": "./node_modules/nx/schemas/workspace-schema.json",
   "version": 2,
   "projects": {
-    "svc-starter": "apps/svc-starter"
+    "svc-starter": "apps/svc-starter",
+    "web-starter": "apps/web-starter",
+    "web-starter-e2e": "apps/web-starter-e2e"
   }
 }
