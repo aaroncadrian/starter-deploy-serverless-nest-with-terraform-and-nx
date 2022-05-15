@@ -79,3 +79,31 @@ resource "aws_iam_role" "lambda_role" {
 }
 
 #endregion
+
+#region Lambda Function
+
+data "archive_file" "lambda_zip" {
+  type        = "zip"
+  source_file = "${path.module}/../../../dist/apps/${var.app_name}/main.js"
+  output_path = "${path.module}/lambda.zip"
+}
+
+resource "aws_lambda_function" "svc_function" {
+  function_name = "${var.app_name}_${var.environment_name}"
+
+  handler          = "main.handler"
+  filename         = data.archive_file.lambda_zip.output_path
+  source_code_hash = data.archive_file.lambda_zip.output_base64sha256
+
+  role = aws_iam_role.lambda_role.arn
+
+  runtime = var.lambda_runtime
+
+  environment {
+    variables = {
+      DYNAMO_TABLE_NAME = aws_dynamodb_table.primary_table.name
+    }
+  }
+}
+
+#endregion
