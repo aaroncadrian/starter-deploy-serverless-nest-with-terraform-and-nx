@@ -29,7 +29,7 @@ export class PeopleController {
       })
     );
 
-    const items = result.Items?.map((item) => unmarshall(item)) ?? [];
+    const items = result.Items?.map((item) => unmarshall(item).data) ?? [];
 
     return {
       items,
@@ -48,7 +48,7 @@ export class PeopleController {
       })
     );
 
-    const item = result?.Item && unmarshall(result.Item);
+    const item = result?.Item && unmarshall(result.Item).data;
 
     return {
       item,
