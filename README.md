@@ -19,3 +19,13 @@
 ## Destroying Resources
 
 1. Run `yarn nx run svc-starter:tf-destroy`
+
+## Frontend
+
+```bash
+yarn nx run web-starter:build:production
+
+yarn nx run web-starter:tf-init
+
+yarn nx run web-starter:tf-apply
+```
