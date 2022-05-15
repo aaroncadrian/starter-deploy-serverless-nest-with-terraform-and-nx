@@ -89,8 +89,10 @@ data "aws_iam_policy_document" "read_site_bucket" {
 resource "aws_cloudfront_distribution" "site" {
   enabled = true
 
-  default_root_object = "index.html"
+#  default_root_object = "index.html"
   #  aliases             = [aws_s3_bucket.site.bucket]
+
+  is_ipv6_enabled = true
 
   default_cache_behavior {
     allowed_methods        = ["GET", "HEAD"]
