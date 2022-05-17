@@ -5,19 +5,19 @@ resource "aws_api_gateway_rest_api" "rest_api" {
 
 #region Stage
 
-#resource "aws_api_gateway_deployment" "default" {
-#  rest_api_id = aws_api_gateway_rest_api.rest_api.id
-#
+resource "aws_api_gateway_deployment" "default" {
+  rest_api_id = aws_api_gateway_rest_api.rest_api.id
+
 #  triggers = {
 #    redeployment = sha1()
 #  }
-#}
-#
-#resource "aws_api_gateway_stage" "default" {
-#  deployment_id = ""
-#  rest_api_id   = aws_api_gateway_rest_api.rest_api.id
-#  stage_name    = "default"
-#}
+}
+
+resource "aws_api_gateway_stage" "default" {
+  deployment_id = aws_api_gateway_deployment.default.id
+  rest_api_id   = aws_api_gateway_rest_api.rest_api.id
+  stage_name    = "default"
+}
 
 #endregion
 
