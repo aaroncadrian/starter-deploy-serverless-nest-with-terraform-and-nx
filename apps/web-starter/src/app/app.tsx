@@ -1,67 +1,43 @@
 import NxWelcome from './nx-welcome';
 import { BrowserRouter, Link, Route, Routes } from 'react-router-dom';
 import { SettingsPage } from './settings-page';
+import { PeoplePage } from './people-page';
+
+const Navigation = () => {
+  return (
+    <ul>
+      <li>
+        <Link to={'/'}>Home</Link>
+      </li>
+
+      <li>
+        <Link to={'/people'}>People</Link>
+      </li>
+
+      <li>
+        <Link to={'/settings'}>Settings</Link>
+      </li>
+
+      <li>
+        <Link to={'/unknown'}>Unknown</Link>
+      </li>
+    </ul>
+  );
+};
 
 export function App() {
   return (
     <BrowserRouter>
+      <Navigation />
+
       <Routes>
-        <Route
-          index
-          element={
-            <>
-              <ul>
-                <li>
-                  <Link to={'settings'}>Go to Settings</Link>
-                </li>
+        <Route index element={<NxWelcome title="web-starter" />} />
 
-                <li>
-                  <Link to={'unknown'}>Go to Unknown Page</Link>
-                </li>
-              </ul>
+        <Route path={'settings'} element={<SettingsPage />} />
 
-              <NxWelcome title="web-starter" />
-            </>
-          }
-        />
+        <Route path={'people'} element={<PeoplePage />} />
 
-        <Route
-          path={'settings'}
-          element={
-            <>
-              <ul>
-                <li>
-                  <Link to={'/'}>Go Home</Link>
-                </li>
-
-                <li>
-                  <Link to={'unknown'}>Go to Unknown Page</Link>
-                </li>
-              </ul>
-
-              <SettingsPage />
-            </>
-          }
-        />
-
-        <Route
-          path={'*'}
-          element={
-            <>
-              <ul>
-                <li>
-                  <Link to={'/'}>Go Home</Link>
-                </li>
-
-                <li>
-                  <Link to={'settings'}>Go to Settings</Link>
-                </li>
-              </ul>
-
-              <div>Not found</div>
-            </>
-          }
-        />
+        <Route path={'*'} element={<div>Not found</div>} />
       </Routes>
     </BrowserRouter>
   );
