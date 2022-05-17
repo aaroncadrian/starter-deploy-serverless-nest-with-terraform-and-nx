@@ -13,7 +13,7 @@ variable "app_name" {
 variable "environment_name" {
   description = "The name of the deployment environment for your app, such as `dev` or `prod`"
   type        = string
-  default     = "dev"
+  default     = "poc"
 }
 
 variable "lambda_runtime" {
