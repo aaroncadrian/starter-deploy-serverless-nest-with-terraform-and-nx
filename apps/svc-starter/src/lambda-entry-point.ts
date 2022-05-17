@@ -7,6 +7,12 @@ let server: Handler;
 
 async function bootstrap(): Promise<Handler> {
   const app = await NestFactory.create(AppModule);
+
+  app.enableCors({
+    origin: '*',
+    allowedHeaders: '*',
+  });
+
   await app.init();
 
   const expressApp = app.getHttpAdapter().getInstance();
@@ -16,7 +22,7 @@ async function bootstrap(): Promise<Handler> {
 export const handler: Handler = async (
   event: any,
   context: Context,
-  callback: Callback,
+  callback: Callback
 ) => {
   server = server ?? (await bootstrap());
   return server(event, context, callback);
