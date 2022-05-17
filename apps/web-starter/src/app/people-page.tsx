@@ -41,6 +41,11 @@ export const PeoplePage = () => {
   return (
     <div>
       <h1>People</h1>
+
+      <button onClick={loadPeople} disabled={loading}>
+        Refresh
+      </button>
+
       {loading ? (
         'Loading...'
       ) : error ? (
