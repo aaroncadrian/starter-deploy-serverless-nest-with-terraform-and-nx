@@ -1,18 +1,84 @@
 resource "aws_api_gateway_rest_api" "rest_api" {
-  name        = "${var.app_name}.${var.environment_name}.rest-api-2"
+  name        = "${var.app_name}.${var.environment_name}.rest-api"
   description = "An API for demonstrating CORS-enabled methods."
 }
 
+#region CloudWatch
+
+resource "aws_cloudwatch_log_group" "rest_api" {
+  name = "/aws/api_gw/${aws_api_gateway_rest_api.rest_api.name}"
+
+  retention_in_days = 30
+}
+
+resource "aws_api_gateway_account" "rest_api" {
+  cloudwatch_role_arn = aws_iam_role.rest_api_cloudwatch.arn
+}
+
+data "aws_iam_policy_document" "rest_api_cloudwatch" {
+  version = "2012-10-17"
+
+  statement {
+    effect  = "Allow"
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      identifiers = ["apigateway.amazonaws.com"]
+      type        = "Service"
+    }
+  }
+}
+
+resource "aws_iam_role" "rest_api_cloudwatch" {
+  name               = "${var.app_name}.${var.environment_name}.api-gateway"
+  assume_role_policy = data.aws_iam_policy_document.rest_api_cloudwatch.json
+}
+
+resource "aws_iam_role_policy_attachment" "rest_api_cloudwatch" {
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs"
+  role       = aws_iam_role.rest_api_cloudwatch.name
+}
+
+#endregion
+
 #region Stage
+
 
 resource "aws_api_gateway_deployment" "default" {
   rest_api_id = aws_api_gateway_rest_api.rest_api.id
+
+  triggers = {
+    redeployment = sha1(jsonencode(["testing"]))
+  }
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "aws_api_gateway_stage" "default" {
   deployment_id = aws_api_gateway_deployment.default.id
   rest_api_id   = aws_api_gateway_rest_api.rest_api.id
   stage_name    = "default"
+
+  xray_tracing_enabled = true
+
+  access_log_settings {
+    destination_arn = aws_cloudwatch_log_group.rest_api.arn
+
+    format = jsonencode({
+      requestId               = "$context.requestId"
+      sourceIp                = "$context.identity.sourceIp"
+      requestTime             = "$context.requestTime"
+      protocol                = "$context.protocol"
+      httpMethod              = "$context.httpMethod"
+      resourcePath            = "$context.resourcePath"
+      routeKey                = "$context.routeKey"
+      status                  = "$context.status"
+      responseLength          = "$context.responseLength"
+      integrationErrorMessage = "$context.integrationErrorMessage"
+    })
+  }
 }
 
 #endregion
