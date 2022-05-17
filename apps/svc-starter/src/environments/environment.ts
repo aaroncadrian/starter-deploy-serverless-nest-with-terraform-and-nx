@@ -2,6 +2,6 @@ export const environment = {
   production: false,
 
   dynamoDb: {
-    tableName: 'demo-table-name',
+    tableName: 'svc-starter.dev',
   },
 };
