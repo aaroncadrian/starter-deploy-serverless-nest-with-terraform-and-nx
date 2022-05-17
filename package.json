@@ -16,6 +16,7 @@
     "@nestjs/platform-express": "^8.0.0",
     "@vendia/serverless-express": "^4.8.0",
     "aws-lambda": "^1.0.7",
+    "axios": "^0.27.2",
     "core-js": "^3.6.5",
     "react": "18.1.0",
     "react-dom": "18.1.0",
