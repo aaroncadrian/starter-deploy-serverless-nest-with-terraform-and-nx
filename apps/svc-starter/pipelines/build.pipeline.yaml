@@ -1,0 +1,25 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+  - main
+
+pool:
+  vmImage: ubuntu-latest
+
+stages:
+  - stage: Build
+    jobs:
+      - job: BuildProductionArtifact
+        steps:
+          - script: yarn
+            displayName: 'Install Dependencies'
+
+          - script: yarn nx build svc-starter --configuration=production
+            displayName: 'Build HTTP Handler'
+
+          - publish: '$(System.DefaultWorkingDirectory)/dist/apps/svc-starter/main.js'
+            artifact: HttpHandler
+            displayName: 'Publish HTTP Handler'
