@@ -1,7 +1,8 @@
-import { Controller, Get, Inject, Param } from '@nestjs/common';
+import { Body, Controller, Get, Inject, Param, Post } from '@nestjs/common';
 import {
   DynamoDBClient,
   GetItemCommand,
+  PutItemCommand,
   QueryCommand,
 } from '@aws-sdk/client-dynamodb';
 import { DYNAMO_TABLE_NAME } from './dynamo-table-name.token';
@@ -49,6 +50,28 @@ export class PeopleController {
     );
 
     const item = result?.Item && unmarshall(result.Item).data;
+
+    return {
+      item,
+    };
+  }
+
+  @Post()
+  async createPerson(@Body() body: Record<string, unknown>) {
+    const personId = Math.random().toString();
+
+    const item = {
+      pk: 'PEOPLE',
+      sk: personId,
+      data: { ...body, id: personId },
+    };
+
+    await this.dynamo.send(
+      new PutItemCommand({
+        TableName: this.tableName,
+        Item: marshall(item),
+      })
+    );
 
     return {
       item,

@@ -38,6 +38,19 @@ export const PeoplePage = () => {
     loadPeople();
   }, [loadPeople]);
 
+  const createPerson = () => {
+    axios.post<{ item: unknown[] }>(
+      'people',
+      {
+        firstName: 'First',
+        lastName: 'Last',
+      },
+      {
+        baseURL: environment.svcStarter.baseUrl,
+      }
+    );
+  };
+
   return (
     <div>
       <h1>People</h1>
@@ -45,6 +58,8 @@ export const PeoplePage = () => {
       <button onClick={loadPeople} disabled={loading}>
         Refresh
       </button>
+
+      <button onClick={createPerson}>Create Person</button>
 
       {loading ? (
         'Loading...'
