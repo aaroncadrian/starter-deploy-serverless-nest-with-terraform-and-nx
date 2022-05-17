@@ -10,12 +10,14 @@ resource "aws_api_gateway_deployment" "default" {
 
 
   triggers = {
-    redeployment = sha1(jsonencode(["testing2"]))
+    redeployment = sha1(jsonencode(["testing22"]))
   }
 
   lifecycle {
     create_before_destroy = true
   }
+
+  depends_on = [aws_api_gateway_integration.proxy]
 }
 
 resource "aws_api_gateway_stage" "default" {
@@ -52,6 +54,14 @@ resource "aws_api_gateway_integration" "proxy" {
   integration_http_method = "POST"
 
   uri = aws_lambda_function.svc_function.invoke_arn
+}
+
+resource "aws_lambda_permission" "proxy_function" {
+  statement_id  = "AllowExecutionFromAPIGatewayProxy"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.svc_function.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_api_gateway_rest_api.rest_api.execution_arn}/*/*/*"
 }
 
 #endregion
