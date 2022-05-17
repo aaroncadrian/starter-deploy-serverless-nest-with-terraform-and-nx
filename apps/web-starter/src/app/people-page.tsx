@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { environment } from '../environments/environment';
 
 export const PeoplePage = () => {
@@ -11,7 +11,7 @@ export const PeoplePage = () => {
     loading: false,
   });
 
-  useEffect(() => {
+  const loadPeople = useCallback(() => {
     setHttpState({
       loading: true,
     });
@@ -32,7 +32,11 @@ export const PeoplePage = () => {
           error: err,
         });
       });
-  }, []);
+  }, [setHttpState]);
+
+  useEffect(() => {
+    loadPeople();
+  }, [loadPeople]);
 
   return (
     <div>
