@@ -118,6 +118,10 @@ resource "aws_lambda_function" "svc_function" {
 resource "aws_apigatewayv2_api" "http_api" {
   name          = "${var.app_name}.${var.environment_name}.http-api"
   protocol_type = "HTTP"
+
+  cors_configuration {
+    allow_origins = ["*"]
+  }
 }
 
 resource "aws_apigatewayv2_stage" "http_api_default" {
